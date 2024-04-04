@@ -7,17 +7,11 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # install system dependencies
 RUN apt-get update && apt-get install -y pkg-config
 
-# install virtualenv
-RUN pip install virtualenv
-
-# create a virtual environment
-RUN virtualenv /venv
-
-# activate virtual environment and install dependencies
-RUN . /venv/bin/activate && \
-    pip install --upgrade pip && \
-    pip install -r requirements.txt
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt /app/
+RUN pip install -r requirements.txt
 
 COPY . /app
 
-ENTRYPOINT [ "/venv/bin/gunicorn", "setup.wsgi"]
+ENTRYPOINT [ "gunicorn", "setup.wsgi"]
